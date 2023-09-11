@@ -11,9 +11,9 @@ test.describe('check products quantity on Contacts page', () => {
         });
 
         await test.step('scroll to products and check quantity', async () => {
-            await categoryPage.scrollProducts();
+            await categoryPage.Products.scrollProducts();
             await expect(async () => {
-                const products = await categoryPage.getProducts();
+                const products = await categoryPage.Products.getProducts();
                 expect(products.length).toBe(36);
             }).toPass();
         });
