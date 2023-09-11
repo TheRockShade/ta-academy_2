@@ -1,7 +1,7 @@
 import { test, expect } from '@Test';
 
-test.describe('check event in Datalayer', () => {
-    test('event should fire after fill email input and press sign up button', async ({
+test.describe('Check event in Datalayer', () => {
+    test('Event should fire after fill email input and press sign up button', async ({
         homePage,
         dataLayer,
     }) => {
