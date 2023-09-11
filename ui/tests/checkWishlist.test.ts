@@ -1,27 +1,17 @@
-import { test, expect } from '@playwright/test';
-import { DataLayer } from '@Utils/dataLayer';
+import { test, expect } from '@Test';
 
 test.describe('check item in wishlist', () => {
-    test('picked item should be in wishlist', async ({ page, baseURL }) => {
-        await page.context().addCookies([
-            {
-                name: 'OptanonAlertBoxClosed',
-                value: new Date().toISOString(),
-                url: baseURL,
-            },
-        ]);
+    test('picked item should be in wishlist', async ({ page, categoryPage, dataLayer }) => {
+        await categoryPage.open('sunglasses');
 
-        await page.goto('sunglasses', { waitUntil: 'domcontentloaded' });
-
-        const [product] = await page.locator('[data-test-name="product"]').all();
+        const [product] = await categoryPage.Products.getProducts();
         const productId = await product.getAttribute('data-test-id');
 
         const pickButton = product.locator('[aria-label="myPick"]');
         await pickButton.click();
 
-        expect(await pickButton.getAttribute('aria-pressed')).toBe('true');
+        expect(await categoryPage.Products.isPickButtonPressed(pickButton)).toBe(true);
 
-        const dataLayer = new DataLayer(page);
         const expectedEvent = {
             event: 'CategoryInteraction',
             eventCategory: 'Category - D',
@@ -32,12 +22,10 @@ test.describe('check item in wishlist', () => {
 
         expect(event).toStrictEqual(expectedEvent);
 
-        await page.locator('//header//div[contains(@Class, "myPicks")]//button').click();
+        await categoryPage.Header.clickMyPicksButton();
 
-        const response = await page.waitForResponse(
-            (response) => response.url().includes('/ms/elastic') && response.status() === 200
-        );
-
-        expect((await response.body()).includes(`"id":${productId}`)).toBe(true);
+        expect(
+            (await categoryPage.MyPicksPopup.getMyPicksResponse()).includes(`"id":${productId}`)
+        ).toBe(true);
     });
 });
