@@ -45,7 +45,7 @@ describe('Add product and compare with data', () => {
         priceInput.input(data.price);
         quantityInput.input(data.quantity);
 
-        modal.clickCreateButton();
+        await modal.clickCreateButton();
 
         reporter.startStep('Add product event should fire after click create button');
         expect(await waitForDataLayer({ name: `Add item - ${data.name}` })).toStrictEqual({
@@ -66,7 +66,7 @@ describe('Add product and compare with data', () => {
         expect(`${await item.getQuantity()}`).toStrictEqual(data.quantity);
         reporter.endStep();
 
-        item.delete();
+        await item.delete();
 
         reporter.startStep('Delete item event should fire after click delete button');
         expect(await waitForDataLayer({ name: `Delete item - ${data.name}` })).toStrictEqual({
@@ -83,9 +83,13 @@ describe('Add product and compare with data', () => {
         reporter.endStep();
 
         const forClearCartList = await cartPage.getCartList();
-        await forClearCartList.clearCartItems();
+        const forClearCartItems = await forClearCartList.getCartItems();
 
-        reporter.startStep('Cart is empty event should fire after cler list');
+        for (const [key] of Object.entries(forClearCartItems)) {
+            await forClearCartItems[key].delete();
+        }
+
+        reporter.startStep('Cart is empty event should fire after clear list');
         expect(await waitForDataLayer({ name: 'Cart is Empty' })).toStrictEqual({
             name: 'Cart is Empty',
             value: 'Quantity of products: 0',

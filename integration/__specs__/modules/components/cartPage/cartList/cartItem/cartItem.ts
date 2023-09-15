@@ -2,7 +2,7 @@ import { Component } from '@Core/component';
 
 export class CartItem extends Component {
     protected selectors = {
-        name: '//h2',
+        name: 'h2',
         fullPrice: './/div[contains(@class, "fullprice")]',
         quantity: '[data-testid="quantity-current"]',
         priceForOne: './/div[contains(@class, "price-for-one")]',
@@ -12,7 +12,7 @@ export class CartItem extends Component {
     };
 
     public async getName(): Promise<string> {
-        const [name] = await this.element.waitForXpath(this.selectors.name);
+        const [name] = await this.element.waitForQuerySelector(this.selectors.name);
         return name.textContent;
     }
 

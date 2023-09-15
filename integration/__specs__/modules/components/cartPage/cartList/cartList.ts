@@ -11,9 +11,4 @@ export class CartList extends Component {
         const cartItems = cartItemsElements.map(item => new CartItem(item));
         return cartItems;
     }
-
-    public async clearCartItems(): Promise<void> {
-        const cartItemsElements = await this.element.waitForQuerySelector(this.selectors.cartItems);
-        cartItemsElements.map(item => new CartItem(item).delete());
-    }
 }
