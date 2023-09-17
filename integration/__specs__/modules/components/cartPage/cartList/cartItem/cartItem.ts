@@ -2,12 +2,19 @@ import { Component } from '@Core/component';
 
 export class CartItem extends Component {
     protected selectors = {
+        name: 'h2',
         fullPrice: './/div[contains(@class, "fullprice")]',
         quantity: '[data-testid="quantity-current"]',
         priceForOne: './/div[contains(@class, "price-for-one")]',
         addButton: './/button[text()="+"]',
         removeButton: './/button[text()="-"]',
+        deleteButton: '[data-testid="delete-btn"]',
     };
+
+    public async getName(): Promise<string> {
+        const [name] = await this.element.waitForQuerySelector(this.selectors.name);
+        return name.textContent;
+    }
 
     public async getPrice(): Promise<number | undefined> {
         const [priceElement] = await this.element.waitForXpath(this.selectors.priceForOne);
@@ -30,5 +37,9 @@ export class CartItem extends Component {
 
     public async removeOne(): Promise<void> {
         await this.element.clickByXpath(this.selectors.removeButton);
+    }
+
+    public async delete(): Promise<void> {
+        await this.element.clickByCSS(this.selectors.deleteButton);
     }
 }
